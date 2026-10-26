@@ -1,0 +1,20 @@
+\renewcommand{\indent}{\hspace*{18pt}}
+\newcommand{\exsplitter}{\noindent\hfil\rule{0.75\textwidth}{0.4pt}\hfil}
+\newcommand{\mytext}[1]{
+    \parbox{0.9\textwidth}{\rule{0pt}{.5\baselineskip}\\
+    \textrm{#1}\\
+    \rule{0pt}{.5\baselineskip}}\\
+}
+\NewCommandCopy{\oldvec}{\vec}
+\renewcommand{\vec}[1]{
+    \mathbf{\oldvec{#1}}
+}
+\newcommand{\cir}[1]{
+    \tikz[baseline]{
+        \node[anchor=base, draw, circle, inner sep=0, minimum width=1.2em]{#1};
+    }
+}
+\newcommand{\textbi}[1]{\textbf{\textit{#1}}}
+\newcommand*{\chapterref}[1]{%
+  \hyperref[{#1}]{\autoref*{#1} \nameref*{#1}}%
+}%

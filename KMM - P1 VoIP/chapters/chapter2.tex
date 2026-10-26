@@ -1,0 +1,89 @@
+\chapter{Plangintza}
+
+\localtableofcontents
+
+\section{Irismena}
+
+Praktika honen honen helburua \gls{voip} teknologiekin lan egitea da \textit{Asterisk} eta \textit{Zoiper} tresnak erabiliz. Bi softwareatan gainetik bakarrik ikasiko dira, eta beraz ez da gehiegi sakondu ez bat, ezta bestean; hots, helburua ikastea da, ez softwarea guztiz menderatzea.
+
+\section{Egin beharreko atazak}
+
+Praktika honek sei ataza nagusi ditu.
+\begin{enumerate}
+    \item \textbf{Instalazioa:} Atal honetan praktika garatzeko behar diren tresnak ordenagailuetan instalatu beharko dira.
+    \item \textbf{4 luzapen telefonikoak erazagutu:} Beraien artean deitu ahal diren 4 luzapen inplementatuko ditugu luzapen hauek ondorengo atazak inplementatzeko beharrezkoak dira.
+    \item \textbf{Erantzungailu automatikoa aktibatu:} Aurreko luzapenak beraien artean deitzerakoan deia jasotzen ez denerako erantzungailu automatikoa aktibatu behar dugu mezuak grabatzeko jasotzaileak beranduago entzuteko.
+    \item \textbf{Dei-desbideratzea inplementatu 2 luzapenen artean:} Aurreko atalean egin den antzera dei bat jasotzen ez denean erantzungailu automatikora birbideratu baino lehenago luzapen espezifiko batek beste luzapen batera desbideratuko da deia.
+    \item \textbf{Bi funtzionalitate gehigarri garatu:}
+    \begin{itemize}
+        \item Caller ID funtzioa erabiliz deia egin duen luzapena lortu dezakegu eta hori erabiliz voice mail funtzioaren erabilera erraztu dugu.
+        \item Audioa dei-desbideratze tartean: Aurreko atazan inplementatutako dei-desbideraketa gauzatzean programak desbideraketa gauzatu dela abisatzen du.
+    \end{itemize}
+    \item \textbf{Proiektuaren dokumentazioa garatu} eta \textbf{proiektua erakusten duen bideoa grabatu}.
+\end{enumerate}
+
+\section{Atazen garapenen denboren estimazioak}
+
+\subsection{Atazen garapenak}
+
+Atazen garapenaren denboraldian honela banatu dira:
+\begin{itemize}
+    \item \textbf{Instalazioa:} Klase orduetan egingo da. Instalazioarekin batera, probako "\textit{Hello World}"\ programa instalatuko da. Hau egiteko \textit{4 ordu} inguru erabiliko ditugu.
+    \item \textbf{Luzapen telefonikoak:} Klase orduetan egiten saiatuko da, baina etxean bukatu beharko da. Uste dugu \textit{3 orduekin} nahikoa izango dela, baina dinamikoki egiteko \textit{5 ordu} erabili beharko ditugu.
+    \item \textbf{Erantzungailu automatikoa:} Etxean egin beharko da, eta \textit{6 ordu} eskainiko dizkiogu.
+    \item \textbf{Dei-desbideratzea:} Etxean egingo da, eta \textit{3 ordu} erabiliko ditugu.
+    \item \textbf{Audio dei-desbideratze tartean:} Etxean egingo da baita ere, eta beste \textit{3 ordu} erabiliko dira.
+    \item \textbf{Dokumentazioa:} Etxean egingo da eta denbora gehien hemen erabiliko dugu. Estimatzen dugu \textit{10 ordu} erraz erabiliko ditugula hau idazten.
+    \item \textbf{Bideoa:} Etxean egingo da, eta bideoa egiteko softwarea erabiltzen ikasten, bideoa grabatzen eta bideoa editatzen \textit{2 ordu} inguru beharko ditugula estimatzen dugu.
+\end{itemize}
+
+\subsection{Proiektuaren garapen mugarriak}
+
+Hurrengo \autoref{tbl:proiektu-garapen-mugarriak} taulan lehenengo proiektu honen garapen mugarriak adierazten dira. Zehazki, bakar bat dugu, urriaren 31an.
+
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{l|llllll|}
+        \cline{2-7}
+                                    & \multicolumn{6}{c|}{Urria}  \\ \hline
+        \multicolumn{1}{|l|}{Ataza} & 9 & 10 & ... & 29 & 30 & 31 \\ \hline
+        \multicolumn{1}{|l|}{P1}    &   &    &     &    &    & ⋄  \\ \hline
+    \end{tabular}
+    \caption{Proiektuaren garapen mugarriak}
+    \label{tbl:proiektu-garapen-mugarriak}
+\end{table}
+
+\section{Arriskuen analisia}
+
+Proiektu hau garatzeko hainbat arrisku hartu beharko ditugu kontuan. Ez badira hartzen, posiblea da proiektua aurrera ez ateratzea.
+\begin{enumerate}[label=R\arabic*.]
+    \item Beste irakasgai bateko kontrola/entrega. Planeatuta ez dagoen entrega edo azterketa bat jartzen badute, azterketa edo entregaren aurreko egunetako ordutegia aldatuko genuke eta ataza batzuk atzeratuko genituzke.
+    \item Gatazkak taldekideekin. Taldekide batekin gatazkak gertatuz gero, berarekin hitz egingo dugu gatazkak murriztu daitezen, denok ingurune eroso batean lan egin dezagun.
+    \item Gaixotasuna. Taldekide bat gaixorik egonez gero, atazen lan karga mugitu egin beharko da beste taldekideen artean.
+    \item Hardwarearekin arazoak. Docker edukiontziak erabiliko direnez, hauen konfigurazioa aldakorra izan daiteke sistema batetik bestera. Honek arazoak sortu ditzake taldekide bakoitzaren ordenagailuarekiko independenteak.
+\end{enumerate}
+
+\section{Plangintzarekiko desberdintasunak}
+
+\subsection{Ataza bakoitzari emandako dedikazioen banaketa}
+
+Atazen garapenaren denboraldian honela banatu dira:
+\begin{itemize}
+    \item \textbf{Instalazioa:} 7 ordu
+    \item \textbf{Luzapen telefonikoak:} 3 ordu
+    \item \textbf{Erantzungailu automatikoa:} 9 ordu
+    \item \textbf{Dei-desbideratzea:} 3 ordu
+    \item \textbf{Audio dei-desbideratze tartean:} 4 ordu
+    \item \textbf{Dokumentazioa:} 13 ordu
+    \item \textbf{Bideoa:} 2 ordu
+\end{itemize}
+
+\begin{important}
+   Denborak ez dira guztiz zehatzak, ez direlako zehazki neurtu lana egin bitartean; hau, hurrengo proiektuetara begira hobetzeko zati garrantzitsu bat dirudigu.
+\end{important}
+
+Ikusi daiteke, ondo estimatu dugula gertatu daitezkeen arazoak kontuan hartuta. Bai dokumentazioak eta batez ere instalazioak denbora askoz gehiago behar izan dugu betetzeko. Guztira, 28 ordu inguru erabili dira.
+
+\subsection{Plangintzarekiko desbiderapenak}
+
+Proiektu honetan jasan dugun desbideraketa handiena instalazioa izan da, nahiz eta ez izan arazo handirik klasean lan egiterakoan, klase praktikoak amaitzean etxean lan egin behar genuen. Etxeetako ordenagailuetan beharrezko softwarea instalatzea, hori izan da arazo handiena, eta 8 ordu inguruko atzerapena jasan dugu dena martxan jartzeko.

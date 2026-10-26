@@ -1,0 +1,71 @@
+\chapter[Asterisk instalazioa]{Asterisk instalazioa}
+\label{chp:asterisk-install}
+
+\localtableofcontents
+
+\section{Sarrera}
+
+Asterisk softwareak gure zoiper bezeroei zerbitzua emango die. Instalazio hau ere Docker irudiak erabiliz egingo da.
+
+\section{Instalazioa}
+
+Hurrengo pausoak jarraituz Asterisk aplikazioa instalatuko da Docker edukiontzi batean.
+\begin{enumerate}
+    \item Karpeta prestatu instalazioa egiteko: \mintinline{text}{~/Documents/VoIP/Asterisk/}
+    \begin{minted}{console}
+    $ mkdir -p ~/Documents/VoIP/Asterisk
+    \end{minted}
+    \item Asterisk-en kodea deskargatu aurretik sortutako karpetan.
+    \begin{minted}{console}
+    $ cd ~/Documents/VoIP/Asterisk
+    $ wget http://downloads.asterisk.org/pub/telephony/asterisk/asterisk-20-current.tar.gz
+    \end{minted}
+    \item Fitxategia deskonprimitu.
+    \begin{minted}{console}
+    $ tar -zxvf asterisk-20-current.tar.gz
+    \end{minted}
+    \item \chapterref{chp:zoiper-install}-en sortutako Docker irudia exekutatu.
+    \begin{minted}{console}
+    $ docker run -it -v /home/$USER/Documents/VoIP/Asterisk:/Asterisk ubuntu:zoiper
+    \end{minted}
+    \item Hurrengo pausoak jarraitu Asterisk konpilatzeko iturburutik.
+    \begin{minted}{console}
+    # cd /Asterisk/asterisk-20.10.0
+    # cd contrib/scripts
+    # ./install_prereq install
+    # cd ../..
+    # ./configure
+    # make
+    # make install
+    # make samples
+    \end{minted}
+    \item \textbf{Docker terminaletik kanpo}, gorde aldaketak irudi berri batean honako komandoa exekutatuz:
+    \begin{important}
+        ID egokia emango du baldin eta exekutatu zen azkeneko docker edukiontzia asterisk-ena bazen.
+    \end{important}
+    \begin{minted}{console}
+    $ newContainerID=$(docker ps -a | awk 'NR==2{printf $1}') && docker commit $newContainerID ubuntu:asterisk
+    \end{minted}
+\end{enumerate}
+
+\section{Exekuzioa}
+
+Hurrengo pausoek Asterisk exekutatzeko pausoak adierazten ditu.
+\begin{enumerate}
+    \item Docker edukiontzia exekutatu hurrengo agindua erabiliz:
+    \begin{minted}{console}
+    $ docker run -it -v /home/$USER/Documents/VoIP/Asterisk:/Asterisk ubuntu:asterisk
+    \end{minted}
+    \item Asterisk exekutatu edukiontzian:
+    \begin{minted}{console}
+    # asterisk -cvvvvv
+    \end{minted}
+\end{enumerate}
+
+Aldaketak egindakoan asterisk-en konfigurazio fitxategiei, \textbf{aldaketak gordetzeko} hurrengo komandoa exekutatu kontsola berri batean:
+\begin{important}
+    ID egokia emango du baldin eta exekutatu zen azkeneko docker edukiontzia asterisk-ena bazen.
+\end{important}
+\begin{minted}{console}
+$ newContainerID=$(docker ps -a | awk 'NR==2{printf $1}') && docker commit $newContainerID ubuntu:asterisk
+\end{minted}

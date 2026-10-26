@@ -1,0 +1,4 @@
+# Compile this project with LuaLaTeX (fontspec/unicode-math need it)
+$pdf_mode = 4;
+# minted and svg (inkscape) need shell escape
+set_tex_cmds('-shell-escape %O %S');

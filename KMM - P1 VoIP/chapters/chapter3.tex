@@ -1,0 +1,411 @@
+\chapter{Asterisk erabiltzen}
+
+\localtableofcontents
+
+\section{Prestaketa}
+
+Asterisk erabiltzen hasteko bi gauza behar ditugu. Alde batetik, asterisk softwarea instalatzea, bestetik, asterisk erabil dezakeen telefono bat. Gauzak errazteko telefono fisikoen ordez softfonoa erabiliko dugu, hots, telefono birtual bat, \textit{zoiper} softwarearen bitartez. Ondorengo \chapterref{chp:zoiper-install} eta \chapterref{chp:asterisk-install} eranskinetan azaltzen da nola instalatu beharrezko softwarea, eta hauen azalpenak kapitulu honen kanpo geratzen dira.
+
+\section{Konfigurazioa}
+
+Behin asterisk instalatuta egonda konfiguratu egin behar da. Guk hiru konfigurazio fitxategi nagusi erabiliko ditugu, biak \mintinline{text}{/etc/asterisk} karpetan daudenak.
+\begin{itemize}
+    \item \mintinline{text}{extensions.conf} --- Konfigurazio fitxategi zaharra, konfigurazio arruntak egiteko erabiltzen da.
+    \item \mintinline{text}{pjsip.conf} --- \textit{chan\_pjsip} liburutegiak erabiltzen duen konfigurazio fitxategia.
+    \item \mintinline{text}{voicemail.conf} --- Erantzungailu automatikoak sortzeko eta ezarpenak aldatzeko erabiltzen den konfigurazio fitxategia.
+\end{itemize}
+
+Hurrengo \autoref{sec:konfigurazio-fitxategiak}-ean atal honetan garatuko diren konfigurazio fitxategiak guztiz osaturik aurkitu daitezke. \autoref{lst:extensions.conf} kode blokean \mintinline{text}{extensions.conf} fitxategiak zer konfigurazio duen azaltzen da gure helburuak betetzeko. Beste \autoref{lst:pjsip.conf} kode blokean \mintinline{text}{pjsip.conf} fitxategiak zer konfigurazio duen azaltzen da. Azkeneko \autoref{lst:voicemail.conf} kode blokean \mintinline{text}{voicemail.conf} fitxategiaren konfigurazioa erakusten da.
+
+\subsection{Garraio protokoloa}
+
+Luzapen telefonikoak konfiguratzen hasi aurretik, garraio-mailan erabiliko dugun protokoloa definituko dugu eta \autoref{lst:pjsip.conf-garraioa}-en ikusi daiteke. Erabiliko den protokoloa \gls{udp} da, eta honako pausoekin zehaztu daiteke.
+\begin{enumerate}
+    \item Testuinguru berri bat sortuko dugu edozein izena erabiliz, \mintinline{text}{transport-udp} erabiliko dugu.
+    \item 3 aldagai sortuko ditugu testuinguruan:
+    \begin{itemize}
+        \item \mintinline{text}{type} --- \textit{transport} motakoa dela adieraziko dugu. Honela, PJSIP-ek badaki hemen duela informazioa garraio protokoloa zehazteko.
+        \item \mintinline{text}{protocol} --- \textit{udp} zehaztuko dugu.
+        \item \mintinline{text}{bind} --- \textit{0.0.0.0} erabiliz asterisk exekutatzen ari den makinaren sare interfaze guztitik hartuko ditu eskaerak.
+    \end{itemize}
+\end{enumerate}
+
+\begin{listing}
+    \begin{minted}{ini}
+    [transport-udp]
+    type=transport
+    protocol=udp
+    bind=0.0.0.0
+    \end{minted}
+    \caption{Garraio-mailako protokoloaren konfigurazioa pjsip.conf konfigurazio fitxategian}
+    \label{lst:pjsip.conf-garraioa}
+\end{listing}
+
+\subsection{Luzapen telefonikoak}
+
+Konfiguratu behar dugun lehenengoa lau luzapen telefoniko dira, beraien arteko deiak egin ahal izateko. Hau egiteko aukera bat da luzapen telefoniko bakoitza osorik definitzea da; honek arazoa du, eskalabilitate txarra duela. Ekiditeko, asteriskek eskaintzen dituen patroiak eta txantiloiak erabiliko dira.
+
+Lehenengo konfigurazioa \mintinline{text}{extensions.conf} fitxategian egingo dugu eta \autoref{lst:extensions.conf-luzapen-deiak}-en ikusi daiteke. Bertan testuinguru bat definituko dugu zehaztuz luzapen bat tekleatzen denean, luzapen bera horiri deitu behar zaiola. Hau idazteko honako pausuak jarraitu behar ditugu:
+\begin{enumerate}
+    \item Testuinguru bat definituko dugu PJSIP-ek erabiltzeko, adibidez, \mintinline{text}{from-internal} deituko zaio.
+    \item \mintinline{text}{exten} aldagaia definituko dugu testuinguruan, 3 balio hartuko dituenak komak erabiliz bananduak.
+    \item Lehenengo balioak tekleatutako luzapenak barneratuko ditu, eta patroiak erabiliko ditugunez, hainbat luzapen hartuko ditu kontuan. Luzapena patroia dela adierazteko "\mintinline{text}{_}"\ izan behar du lehenengo karakterea, adierazpen erregular gisako sintaxia erabiliz luzapena idatziz jarraian. [800, 803] tarteko luzapenak zehazteko adierazpen hau erabili dezakegu: \mintinline{text}{80[0-3]}
+    \item Bigarrengo balioak zenbaki osoko bat hartuko du, lehentasuna adierazten duena; hots, programak \mintinline{text}{exten} aldagaiak exekutatzeko ordena. \mintinline{text}{1} balioa emango diogu, lehenengoa.
+    \item Hirugarren balioak zein programa exekutatu behar den adierazten du. Guk deiak egin nahi ditugu, beraz \mintinline{text}{Dial} aplikazioa erabiliko dugu. Aplikazioari bi parametro zehaztu behar dizkiogu. Lehenengoa, nori egin behar zaion deia; bigarrena, zenbat denbora itxoin nahi den deia erantzun arte.
+    \begin{itemize}
+        \item Nori deia egin zehazteko, ze liburutegi erabili behar den eta nora egin behar den deia zehaztu behar da. Guk \mintinline{text}{PJSIP} liburutegia erabiliko dugu, eta nori deia egin jakiteko asteriskek eskaintzen digun \mintinline{text}{EXTEN} aldagaia berreskuratuko dugu. Honela, 800 luzapena tekleatzen bada 800 zenbakiari deituko zaio; ordea, 803 luzapena tekleatzen bada 803 zenbakiari.
+        \item Aplikazioari zehaztuko diogu deia egiten denetik 10 segundotan deia ez bada hartzen hau mozteko. Moztean \mintinline{text}{exten} aldagai gehiago baditu, hauek lehentasuna errespetatzen exekutatzen jarraituko du.
+    \end{itemize}
+\end{enumerate}
+
+\begin{listing}
+    \begin{minted}{ini}
+    [from-internal]
+    exten => _80[0-3],1,Dial(PJSIP/${EXTEN}, 10)
+    \end{minted}
+    \caption{Luzapen telefonikoen konfigurazioa deientzako extensions.conf konfigurazio fitxategian}
+    \label{lst:extensions.conf-luzapen-deiak}
+\end{listing}
+
+Bigarrengo konfigurazioa \mintinline{text}{pjsip.conf} fitxategian egingo dugu eta \autoref{lst:pjsip.conf-luzapen-deiak}-en ikusi daiteke. Bertan luzapen telefoniko bakoitzeko testuinguru multzo bat behar dugu, baina informazioa ez errepikatzearren, asteriskek eskaintzen dizkigun txantiloiak erabiliko ditugu; testuinguruak gisa definitzen dira, baina \mintinline{text}{(!)} behar dute amaieran. Hiru txantiloi nagusi erabiliko ditugu:
+\begin{itemize}
+    \item \mintinline{text}{default-endpoint}: erabiltzailea sortzeko erabiliko den testuinguru nagusia da eta \autoref{lst:pjsip.conf-luzapen-deiak-oinarrizko-txantiloi}-en osorik ikusi daiteke.
+    \begin{itemize}
+        \item \mintinline{text}{type} --- \textit{endpoint} motakoa izango da testuingurua, eta hemendik hasiko da definitzen erabiltzailearentzako konfigurazio osoa.
+        \item \mintinline{text}{context} --- \textit{from-internal} balioa emango diogu, aurreko konfigurazioan sortutako erregelak errespeta ditzan.
+        \item \mintinline{text}{disallow} / \mintinline{text}{allow} --- aldagai hauek erabiltzen zein codec onartzen diren adierazi daiteke. Gure kasuan \textit{ulaw} codec-a bakarrik onartu nahi dugu.
+    \end{itemize}
+    \begin{listing}
+        \begin{minted}{ini}
+        [default-endpoint](!)
+        type=endpoint
+        context=from-internal
+        disallow=all
+        allow=ulaw
+        \end{minted}
+        \caption{Luzapen telefonikoen oinarrizko konfigurazio txantiloia deientzako pjsip.conf konfigurazio fitxategian}
+        \label{lst:pjsip.conf-luzapen-deiak-oinarrizko-txantiloi}
+    \end{listing}
+    \item \mintinline{text}{default-auth}: erabiltzailea sartu eta identifikatu ahal izateko konfigurazioak biltzen dituen testuingurua da, eta \autoref{lst:pjsip.conf-luzapen-deiak-oinarrizko-sesio-txantiloia}-en osorik ikusi daiteke.
+    \begin{itemize}
+        \item \mintinline{text}{type} --- \textit{auth} motakoa izango da testuingurua, eta hemen konfiguratuko dira erabiltzaileak sesioa hasten ezarpenak.
+        \item \mintinline{text}{auth_type} --- \textit{userpass} adieraziz erabiltzaileak kontuan sartzeko erabiltzailea eta pasahitza erabili beharko du.
+        \item \mintinline{text}{password} --- aldagai hau erabiltzailearentzat pasahitza ezartzeko erabiltzen da. Soilik probak egiten ari garenez \textit{unsecurepassword} pasahitza ezarriko diegu erabiltzaile guztiei. 
+    \end{itemize}
+    \begin{listing}
+        \begin{minted}{ini}
+        [default-auth](!)
+        type=auth
+        auth_type=userpass
+        password=unsecurepassword
+        \end{minted}
+        \caption{Luzapen telefonikoen oinarrizko sesio kautotzearen konfigurazio txantiloia deientzako pjsip.conf konfigurazio fitxategian}
+        \label{lst:pjsip.conf-luzapen-deiak-oinarrizko-sesio-txantiloia}
+    \end{listing}
+    \item \mintinline{text}{default-aor}: \gls{aor} konfiguratzeko erabiltzen den testuingurua da, eta \autoref{lst:pjsip.conf-luzapen-deiak-oinarrizko-aor-txantiloi}-en osorik ikusi daiteke.
+    \begin{itemize}
+        \item \mintinline{text}{type} --- \textit{aor} motakoa izango da testuingurua, eta hemen luzapenaren helbideari dagozkion ezarpenak konfiguratuko dira.
+        \item \mintinline{text}{max_contacts} --- \textit{1} adieraziz erabiltzaile batek dei bakar bat egin dezakeala aldi berean zehaztu daiteke.
+    \end{itemize}
+    \begin{listing}
+        \begin{minted}{ini}
+        [default-aor](!)
+        type=aor
+        max_contacts=1
+        \end{minted}
+        \caption{Luzapen telefonikoen oinarrizko \gls{aor} konfigurazio txantiloia deientzako pjsip.conf konfigurazio fitxategian}
+        \label{lst:pjsip.conf-luzapen-deiak-oinarrizko-aor-txantiloi}
+    \end{listing}
+\end{itemize}
+
+Jada txantiloiak sortuta, erabiltzaileak sortzea erreza da. Erabiltzaile bakoitzeko hiru testuinguru sortu behar ditugu \autoref{lst:pjsip.conf-luzapen-deiak}-en ikusten den bezala, \mintinline{text}{deafult-endpoint}, \mintinline{text}{default-auth} eta \mintinline{text}{default-aor} txantiloiak jaraunsten dituztenak hurrenez hurren. Oinarrizko testuinguruan \mintinline{text}{auth} aldagaia zehaztu behar dugu kautotze testuinguruaren izena adieraziz, eta \mintinline{text}{aors} aldagaia aor testuinguruaren izena adieraziz; kautotzen testuinguruan erabiltzaileak izango duen telefono zenbakia adierazi behar dugu \mintinline{text}{username} aldagaian zehaztuz.
+
+\begin{listing}
+    \begin{minted}{ini}
+    [800](default-endpoint)
+    auth=800
+    aors=800
+    [800](default-auth)
+    username=800
+    [800](default-aor)
+    
+    [801](default-endpoint)
+    auth=801
+    aors=801
+    [801](default-auth)
+    username=801
+    [801](default-aor)
+    
+    [802](default-endpoint)
+    auth=802
+    aors=802
+    [802](default-auth)
+    username=802
+    [802](default-aor)
+    
+    [803](default-endpoint)
+    auth=803
+    aors=803
+    [803](default-auth)
+    username=803
+    [803](default-aor)
+    \end{minted}
+    \caption{Luzapen telefonikoen konfigurazioa deientzako pjsip.conf konfigurazio fitxategian}
+    \label{lst:pjsip.conf-luzapen-deiak}
+\end{listing}
+
+\subsection{Erantzungailu automatikoa}
+
+Zer gertatzen da erabiltzaile batek dei bat egitean hartzaileak ez badu erantzuten? Deia guztiz galduko da noski. Hau ekiditeko, aurreko atalean sortutako luzapen telefoniko bakoitzari erantzungailu automatiko bat ezarriko zaio. Erantzungailu telefonikoaren zenbakiak ez du zertan luzapen telefonikoaren zenbaki berdina izan, baina kontuak sinplifikatzeko berdinak izango dira luzapen guztietarako.
+
+Lehenengo pausua \mintinline{text}{voicemail.conf} fitxategia konfiguratzea da; bai balio lehenetsiak zehazteko, baita erabiltzaileen erantzungailu automatikoak sortzeko. Fitxategia \autoref{lst:voicemail.conf-erantzungailu-automatikoa}-an ikusi daiteke. Bai \mintinline{text}{general} testuingurua, baita \mintinline{text}{zonemessages} fitxategiko balio lehenetsiekin bete da. Aldatu behar duguna \mintinline{text}{default} testuingurua da, eta erantzungailuak banan bana definitu behar ditugu, lerro bat erantzungailu bakoitzeko:
+\begin{itemize}
+    \item Aldagaiaren izena erantzungailuaren izena izango da; hots, nora deitu behar den erantzungailua atzitzeko.
+    \item Komaz bananduta 3 parametro behar ditu aldagaiak:
+    \begin{enumerate}
+        \item Erantzungailura sartzeko eskatuko duen pasahitza.
+        \item Erantzungailuaren izena
+        \item Erantzungailuan utzitako mezuak zein posta elektronikora bidaliko dien, baliabide hau konfiguratuz gero.
+    \end{enumerate}
+\end{itemize}
+
+\begin{listing}
+    \begin{minted}{ini}
+    [general]
+    format=wav49|gsm|wav
+    serveremail=asterisk
+    attach=yes
+    skipms=3000
+    maxsilence=10
+    silencethreshold=128
+    maxlogins=3
+    emaildateformat=%A, %B %d, %Y at %r
+    pagerdateformat=%A, %B %d, %Y at %r
+    sendvoicemail=yes
+    
+    [zonemessages]
+    eastern=America/New_York|'vm-received' Q 'digits/at' IMp
+    central=America/Chicago|'vm-received' Q 'digits/at' IMp
+    central24=America/Chicago|'vm-received' q 'digits/at' H N 'hours'
+    military=Zulu|'vm-received' q 'digits/at' H N 'hours' 'phonetic/z_p'
+    european=Europe/Copenhagen|'vm-received' a d b 'digits/at' HM
+
+    [default]
+    800 => 1234,Zortziehun,800@example.com
+    801 => 1234,Zortziehun eta bat,801@example.com
+    802 => 1234,Zortziehun eta bi,802@example.com
+    803 => 1234,Zortziehun eta hiru,803@example.com
+    \end{minted}
+    \caption{Erantzungailu automatikoen konfigurazioa voicemail.conf fitxategian}
+    \label{lst:voicemail.conf-erantzungailu-automatikoa}
+\end{listing}
+
+Hurrengo pausua, \mintinline{text}{extensions.conf} fitxategiko \mintinline{text}{from-internal} testuinguruari \mintinline{text}{same} aldagai berri bat definituko diogu, \autoref{lst:extensions.conf-erantzungailu-automatikoa}-an ikusi daiteke.
+\begin{itemize}
+    \item Lehenengo balioari \textit{n} karakterea emango diogu. Hau eginda asteriskek badaki testuinguruan definitutako \textit{dialplan}-ean, hots, erregela zerrendan, aurreko erregelak ez badu guztiz ondo funtzionatu erregela honekin jarraitzeko. Kontzeptu honek konfigurazio fitxategian lerro gainean duen erregelaren lehentasun berdina izango du.
+    \item Bigarren balioak zein programa exekutatu behar den adieraziko du. Erantzungailua exekutatzeko \mintinline{text}{VoiceMail} aplikazioa erabiliko dugu. Aplikazioak bi parametro hartu ditzake: Lehenengoa, zein erantzungailu erabili behar den; bigarrena, erantzungailuak izan ditzakeen aukera gehigarriak.
+    \begin{itemize}
+        \item Erantzungailuaren identifikazioan erantzungailu identifikazio zerrenda bat idatzi daiteke, baina guk bakarra erabiliko dugu aldi berean. Erantzungailuaren identifikazioak honako egitura jarraitu behar du "\mintinline{text}{erantzungailuaren_zenbakia@testuingurua}", testuingurua zehazten ez bada testuinguru lehenetsia erabiliko da. Erantzungailuaren zenbakia lortzeko, aurreko atalean egin dugun bezala \mintinline{text}{EXTEN} aldagaia berreskuratuko dugu.
+        \item Erantzungailuaren aukerak koma bidez banandutako banderak erabiliz konfiguratzen dira. Guk aukera bakarra erabiliko dugu, "\mintinline{text}{u}", hartzaileak une honetan ezin duela deia hartu esaten duen mezu bat erreproduzitzeko esango diona asteriskeri.
+    \end{itemize}
+\end{itemize}
+
+Aurreko erregelaren jarraian beste \mintinline{text}{same} aldagai bat definituko dugu. Honek \mintinline{text}{HangUp} aplikazioa exekutatuko du \mintinline{text}{VoiceMail} aplikazio amaitu ondoren. Nahiz eta ez izan guztiz beharrezkoa, egitura osatzeko ondo dator.
+
+\begin{listing}
+    \begin{minted}{ini}
+    [from-internal]
+    ...
+    same => n,VoiceMail(${EXTEN}@default,u)
+    same => n,HangUp()
+    \end{minted}
+    \caption{Erantzungailu automatikoaren konfigurazioa extensions.conf konfigurazio fitxategian}
+    \label{lst:extensions.conf-erantzungailu-automatikoa}
+\end{listing}
+
+Aurreko konfigurazioa eginda edozeinek utzi dezake ahots mezu bat erantzungailu automatikoetan; baina, oraindik ez dugu aukerarik erantzungailuko mezuak entzuteko. Arazo hau konpontzeko \mintinline{text}{exten} erregela segida berri bat sortuko dugu \mintinline{text}{from-internal} ingurune berberan, \autoref{lst:extensions.conf-erantzungailu-automatikoa-entzun}-en ikusten den bezala; sintaxia oso antzekoa denez garrantzitsuena besterik ez da azalduko.
+\begin{itemize}
+    \item \textit{*98} zenbakira deitzen denean, asteriskek deia zuzenean hartuko du "\mintinline{text}{i}"\ aukera erabiltzen denez eta hurrengo erregelara joango da.
+    \item \mintinline{text}{VoiceMailMain} aplikazioaren bitartez erantzungailu automatikoko mezuak entzun ditzakegu. Lehenengo argumentu gisa erantzungailuaren identifikatzailea jarri behar dugu, baita ere \textit{voicemail.conf}-en definitu den ingurunearen izena "\mintinline{text}{@}"\ bidez erantsita amaieran lehenetsiatako ez bada (\textit{default}). Aurreko atalean definitu genuen luzapen telefoniko bakoitzak identifikatzaile berdineko erantzungailu automatikoa izango zutela, eta beraz, \mintinline{text}{CALLERID} funtzioa erabiliz eta  lehenengo posizioan \mintinline{text}{num} parametroa zehaztuta deia egin duen luzapena lortu dezakegu. Bigarren argumentu gisa "\mintinline{text}{s}"\ aukera zehaztuz pasahitza sartzearen beharra kendu dezakegu, luzapenak berdintzen bakarrik erantzungailu automatikoaren jabeak atzitu dezake eta.
+    \item Beste erregelan bezala, \mintinline{text}{HangUp} aplikazioa erabili dezakegu sintaxia borobiltzeko.
+\end{itemize}
+
+\begin{listing}
+    \begin{minted}{ini}
+    [from-internal]
+    ...
+    exten => *98,1,Answer(,i)
+    same => n,VoiceMailMain(${CALLERID(num)}@default,s)
+    same => n,HangUp()
+    \end{minted}
+    \caption{Erantzungailu automatikoa entzuteko konfigurazioa extensions.conf konfigurazio fitxategian}
+    \label{lst:extensions.conf-erantzungailu-automatikoa-entzun}
+\end{listing}
+
+\subsection{Dei-desbideratzea}
+
+Dei-desbideratzea aktibatuko dugu 802 luazpenerako. Kasu honetan, norbaitek 802-ra deitzen badu eta hartzaileak ez badu erantzuten, 802 erantzungailu-automatikora deitu beharrean 803 luzapenera egingo da deia. Bertan, 803 luzapena duen hartzaileak ere erantzuten ez badu, 803 erantzungailu-automatikora deituko da. \autoref{lst:extensions.conf-dei-desbideratzea}-an ikusi daiteke nola konfiguratu den baliabide hau \mintinline{text}{extensions.conf} fitxategian.
+\begin{itemize}
+    \item Lehenengo erregelaren azpian, \mintinline{text}{Dial} aplikazioa erabiltzen den lekuan, \mintinline{text}{GotoIf} aplikazioa erabiliko dugu erregela zerrenda desbideratzeko. Honek parametro bat jasoko du egitura hau duena: \mintinline{text}{$[baldintza]?noraSaltoEgiaDenean:noraSaltoFaltsuaDenean}.
+    \begin{itemize}
+        \item Baldintzan deitutako luzapena 802 den kontrolatu behar dugu: \mintinline{text}{${EXTEN} = 802}
+        \item Egiazkoa denerakoan, nahi dugun erregelaren lehentasuna zehaztu behar da, edo lehentasunei etiketak zehaztea eta etiketa hau ezartzea. Guk etiketa bat erabiliko dugu, \mintinline{text}{redirect802}.
+        \item Faltsua denean ez dugu ezer berezirik egin nahi, beraz ez dugu ezer idatziko atal horretan.
+    \end{itemize}
+    \item Erregela katea jarraituko dugu azkeneko erregelatik, eta aurretik egindako oso antzekoak diren erregelak berriro idatziko ditugu, baina 803 luzapena erreferentziatuz adierazpen erregularrak erabili ordez.
+\end{itemize}
+
+\begin{listing}
+    \begin{minted}[highlightlines={3,6-8}]{ini}
+    [from-internal]
+    exten => _80[0-3],1,Dial(PJSIP/${EXTEN},10)
+    same => n,GotoIf($[${EXTEN} = 802]?redirect802)
+    same => n,VoiceMail(${EXTEN}@default,u)
+    same => n,HangUp()
+    same => n(redirect802),Dial(PJSIP/803,10)
+    same => n,VoiceMail(803@default,u)
+    same => n,Hangup()
+    \end{minted}
+    \caption{802tik 803ra dei desbiderapenaren konfigurazioa extensions.conf konfigurazio fitxategian}
+    \label{lst:extensions.conf-dei-desbideratzea}
+\end{listing}
+
+\subsection{Audioa dei-desbideratze tartean}
+
+ Deitzaileak ez du jakingo zer gertatzen ari den 802 luzapenetik 803 luzapenera desbideratzerakoan. Hau saihesteko, asteriskek eskaintzen dituen \mintinline{text}{Playback} eta \mintinline{text}{SayNumber} aplikazioak erabilita ohartaraziko dugu.
+\begin{itemize}
+    \item \mintinline{text}{SayNumber} --- Zenbaki bat jasotzen du parametro gisa eta ahoskatzen saiatuko da.
+    \item \mintinline{text}{Playback} --- Audio fitxategi bat erreproduzitzen du.
+\end{itemize}
+
+\begin{listing}
+    \begin{minted}[highlightlines={6-7}]{ini}
+    [from-internal]
+    exten => _80[0-3],1,Dial(PJSIP/${EXTEN},10)
+    same => n,GotoIf($[${EXTEN} = 802]?redirect802)
+    same => n,VoiceMail(${EXTEN}@default,u)
+    same => n,HangUp()
+    same => n(redirect802),Playback(call-forwarding)
+    same => n,SayNumber(803)
+    same => n,Dial(PJSIP/803,10)
+    same => n,VoiceMail(803@default,u)
+    same => n,Hangup()
+    \end{minted}
+    \caption{Dei desbiderapenaren abisuaren konfigurazioa extensions.conf konfigurazio fitxategian}
+    \label{lst:extensions.conf-dei-desbideratzea-abisua}
+\end{listing}
+
+\subsection{Caller ID-ren erabilera}
+
+Aurreko \autoref{lst:extensions.conf-erantzungailu-automatikoa} atalean azaldu den bezala, asterisk-ek funtzioa eskaintzen du. Funtzio honek kanalaren \mintinline{text}{CallerID} irakurtzea eta idaztea ahalbidetzen du. Adibidez, funtzioaren bitartez deitzailearen telefono zenbakia lortu dezakegu \mintinline{text}{num} pasata parametro gisa. Funtzio honen bidez identifikadore askoz gehiago lortu daitezke, eta \href{https://docs.asterisk.org/Asterisk_20_Documentation/API_Documentation/Dialplan_Functions/CALLERID/}{honako} estekan ikusi daitezke. 
+    
+\section{Konfigurazio fitxategiak}
+\label{sec:konfigurazio-fitxategiak}
+
+Atal honetan konfigurazio fitxategi osoak ikusi daitezke. Jarraian, \autoref{lst:extensions.conf}-en \mintinline{text}{extensions.conf} konfigurazio fitxategi osatua; baita ere \mintinline{text}{pjsip.conf} konfigurazio fitxategia \autoref{lst:pjsip.conf}-en; eta azkenik,  \autoref{lst:voicemail.conf}-en, \mintinline{text}{voicemail.conf} fitxategia.
+
+\begin{listing}
+    \begin{minted}{ini}
+    [from-internal]
+    exten => _80[0-3],1,Dial(PJSIP/${EXTEN},10)
+    same => n,GotoIf($[${EXTEN} = 802]?redirect802)
+    same => n,VoiceMail(${EXTEN}@default,u)
+    same => n,HangUp()
+    same => n(redirect802),Playback(call-forwarding)
+    same => n,SayNumber(803)
+    same => n,Dial(PJSIP/803,10)
+    same => n,VoiceMail(803@default,u)
+    same => n,Hangup()
+    
+    exten => *98,1,Answer(,i)
+    same => n,VoiceMailMain(${CALLERID(num)}@default,s)
+    same => n,HangUp()
+    \end{minted}
+    \caption{/etc/asterisk/extensions.conf konfigurazio fitxategia}
+    \label{lst:extensions.conf}
+\end{listing}
+
+\begin{listing}
+    \begin{minted}{ini}
+    [transport-udp]
+    type=transport
+    protocol=udp
+    bind=0.0.0.0
+    
+    [default-endpoint](!)
+    type=endpoint
+    context=from-internal
+    disallow=all
+    allow=ulaw
+
+    [default-auth](!)
+    type=auth
+    auth_type=userpass
+    password=unsecurepassword
+
+    [default-aor](!)
+    type=aor
+    max_contacts=1
+    
+    [800](default-endpoint)
+    auth=800
+    aors=800
+    [800](default-auth)
+    username=800
+    [800](default-aor)
+    
+    [801](default-endpoint)
+    auth=801
+    aors=801
+    [801](default-auth)
+    username=801
+    [801](default-aor)
+    
+    [802](default-endpoint)
+    auth=802
+    aors=802
+    [802](default-auth)
+    username=802
+    [802](default-aor)
+    
+    [803](default-endpoint)
+    auth=803
+    aors=803
+    [803](default-auth)
+    username=803
+    [803](default-aor)
+    \end{minted}
+    \caption{/etc/asterisk/pjsip.conf konfigurazio fitxategia}
+    \label{lst:pjsip.conf}
+\end{listing}
+
+\begin{listing}
+    \begin{minted}{ini}
+    [general]
+    format=wav49|gsm|wav
+    serveremail=asterisk
+    attach=yes
+    skipms=3000
+    maxsilence=10
+    silencethreshold=128
+    maxlogins=3
+    emaildateformat=%A, %B %d, %Y at %r
+    pagerdateformat=%A, %B %d, %Y at %r
+    sendvoicemail=yes
+    
+    [zonemessages]
+    eastern=America/New_York|'vm-received' Q 'digits/at' IMp
+    central=America/Chicago|'vm-received' Q 'digits/at' IMp
+    central24=America/Chicago|'vm-received' q 'digits/at' H N 'hours'
+    military=Zulu|'vm-received' q 'digits/at' H N 'hours' 'phonetic/z_p'
+    european=Europe/Copenhagen|'vm-received' a d b 'digits/at' HM
+
+    [default]
+    800 => 1234,Zortziehun,800@example.com
+    801 => 1234,Zortziehun eta bat,801@example.com
+    802 => 1234,Zortziehun eta bi,802@example.com
+    803 => 1234,Zortziehun eta hiru,803@example.com
+    \end{minted}
+    \caption{/etc/asterisk/voicemail.conf konfigurazio fitxategia}
+    \label{lst:voicemail.conf}
+\end{listing}

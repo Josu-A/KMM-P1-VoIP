@@ -1,0 +1,69 @@
+\documentclass[11pt, a4paper]{report}
+\newcommand{\docauthorone}{Josu Aguinaga}
+\newcommand{\docemailone}{jaguinaga004@ikasle.ehu.eus}
+\newcommand{\docauthortwo}{Danel Osa}
+\newcommand{\docemailtwo}{dosa001@ikasle.ehu.eus}
+%\newcommand{\docauthorthree}{user}
+%\newcommand{\docemailthree}{user@mail}
+\newcommand{\doctitle}{1. Praktika: IP bidezko ahotsa (VoIP)}
+
+\input{setup/packages}
+\input{setup/commands}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Set Title
+\usepackage{authblk} % Author shenanigans
+\renewcommand*{\Authands}{ eta }
+\renewcommand*{\Affilfont}{\normalsize\normalfont}
+\renewcommand*{\Authfont}{\bfseries}
+\setlength{\affilsep}{2em}
+\title{
+    \includegraphics[width=0.6\textwidth]{ehu_info_logo}~
+    \\[1cm]
+    \doctitle
+}
+\author[1]{\docauthorone}
+\author[2]{\docauthortwo}
+%\author[3]{\docauthorthree}
+{
+    \makeatletter
+    \renewcommand{\AB@affilsepx}{: \protect\Affilfont}
+    \makeatother
+
+    \affil[ ]{E-mail}
+
+    \makeatletter
+    \renewcommand{\AB@affilsepx}{, \protect\Affilfont}
+    \makeatother
+
+    \affil[1]{\docemailone}
+    \affil[2]{\docemailtwo}
+    %\affil[3]{\docemailthree}
+}
+\date{2024ko urriak 31}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Hyper-references
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    urlcolor=red,
+    pdftitle=\doctitle,
+    pdfauthor={\docauthorone}%, \docauthortwo, \docauthorthree}
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Comment for dark themed output
+\iffalse
+\color{white}
+\pagecolor{black!82}
+\hypersetup{linkcolor=cyan}
+\setminted{
+    bgcolor={rgb,255: red,66;green,66;blue,66}
+}
+\setmintedinline{bgcolor={}}
+\fi
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -1,0 +1,74 @@
+\chapter[Zoiper instalazioa]{Zoiper instalazioa}
+\label{chp:zoiper-install}
+
+\localtableofcontents
+
+\section{Sarrera}
+
+Zoiper softwarearekin gure asterisk zerbitzariarentzat bezeroak sortu ditzakegu. Hainbat bezero ahal izateko ordenagailu bakar batean, instalazioa Docker irudiak erabiliz egingo dugu.
+
+\section{Instalazioa}
+
+Hurrengo pausoak jarraituz Zoiper aplikazioa instalatuko da Docker edukiontzi batean.
+\begin{enumerate}
+    \item Karpeta prestatu instalazioa egiteko: \mintinline{text}{~/Documents/VoIP/Zoiper/}
+    \begin{minted}{console}
+    $ mkdir -p ~/Documents/VoIP/Zoiper
+    \end{minted}
+    \item Zoiper-en kodea deskargatu aurretik sortutako karpetan.
+    \begin{important}
+        Baliteke web orriak cookiak eskatzea deskarga egiteko. Horrela bada, nabigatzaile batetik deskargatu beharko da.
+    \end{important}
+    \begin{minted}{console}
+    $ cd ~/Documents/VoIP/Zoiper
+    $ wget -O Zoiper https://www.zoiper.com/en/voip-softphone/download/zoiper5/for/linux
+    \end{minted}
+    \item Fitxategia deskonprimitu.
+    \begin{minted}{console}
+    $ tar -Jxvf Zoiper
+    \end{minted}
+    \item Docker edukiontzia sortzeko konfigurazio fitxategia sortu: \mintinline{text}{~/Documents/VoIP/Zoiper/Dockerfile}
+    \begin{minted}{docker}
+    FROM ubuntu:latest
+    
+    RUN apt-get update && apt-get install -y libnotify4 libxss1 libv4l-dev libpulse-dev alsa-utils libgtk2.0-0 libnss3 libatk-bridge2.0-0 libdrm-dev libgbm-dev libxkbcommon-dev libasound-dev libasound2-plugins iproute2 libgl1 nano vim
+    \end{minted}
+    \item Docker irudia sortu hurrengoa exekutatuz.
+    \begin{minted}{console}
+    $ docker build -t ubuntu:zoiper .
+    \end{minted}
+\end{enumerate}
+
+\section{Exekuzioa}
+
+Hurrengo pausoek Zoiper exekutatzeko pausoak adierazten ditu.
+\begin{enumerate}
+    \item Lehenengo, X11 aplikazioak exekutatzeko ahalmena eman Linuxeko erabiltzaile guztiei:
+    \begin{minted}{console}
+    $ xhost +Local:*
+    \end{minted}
+    \item Docker edukiontzia exekutatu hurrengo agindua erabiliz:
+    \begin{minted}{console}
+    $ docker run -it -e DISPLAY \
+    -v /tmp/.X11-unix/:/tmp/.X11-unix \
+    -v /home/$USER/Documents/VoIP/Zoiper:/Zoiper \
+    -v /etc/alsa:/etc/alsa \
+    -v /usr/share/alsa:/usr/share/alsa \
+    -v ~/.config/pulse:/.config/pulse \
+    -v "/run/user/$UID/pulse/native:/run/user/$UID/pulse/native" \
+    --env "PULSE_SERVER=unix:/run/user/$UID/pulse/native" \
+    --device /dev/dri:/dev/dri \
+    --device /dev/snd \
+    ubuntu:zoiper
+    \end{minted}
+    \item Edukiontzi barruan erabiltzaile berri bat sortu, eta erabiltzaile horrekin sesioa hasi.
+    \begin{minted}{console}
+    # nereErabiltzailea="Erabiltzaile-izena"
+    # useradd -u $(ls /run/user) -s /bin/bash -m $nereErabiltzailea
+    # su $nereErabiltzailea
+    \end{minted}
+    \item Zoiper exekutatu.
+    \begin{minted}{console}
+    $ cd /Zoiper/Zoiper5 && ./zoiper
+    \end{minted}
+\end{enumerate}

@@ -1,0 +1,10 @@
+\ProvidesDictionary{glossaries-dictionary}{Basque}
+
+\providetranslation{Glossary}{Glosarioa}
+\providetranslation{Acronyms}{Akronimoa}
+\providetranslation{Notation (glossaries)}{Notazioa}
+\providetranslation{Description (glossaries)}{Deskribapena}
+\providetranslation{Symbol (glossaries)}{Ikurra}
+\providetranslation{Page List (glossaries)}{Orrialde Zerrenda}
+\providetranslation{Symbols (glossaries)}{Ikurrak}
+\providetranslation{Numbers (glossaries)}{Zenbakiak}

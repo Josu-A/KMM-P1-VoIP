@@ -1,0 +1,88 @@
+\ProvidesGlossariesLang{basque}
+
+\glsifusedtranslatordict{Basque}
+{%
+  \addglossarytocaptions{\CurrentTrackedLanguage}%
+  \addglossarytocaptions{\CurrentTrackedDialect}%
+}
+{%
+  \@ifpackageloaded{polyglossia}%
+  {%
+    \newcommand*{\glossariescaptionsbasque}{%
+      \renewcommand*{\glossaryname}{\textbasque{Glosarioa}}%
+      \renewcommand*{\acronymname}{\textbasque{Akronimoa}}%
+      \renewcommand*{\entryname}{\textbasque{Notazioa}}%
+      \renewcommand*{\descriptionname}{\textbasque{Deskribapena}}%
+      \renewcommand*{\symbolname}{\textbasque{Ikurra}}%
+      \renewcommand*{\pagelistname}{\textbasque{Orrialde Zerrenda}}%
+      \renewcommand*{\glssymbolsgroupname}{\textbasque{Ikurrak}}%
+      \renewcommand*{\glsnumbersgroupname}{\textbasque{Zenbakiak}}%
+      \def\figureautorefname{\textbasque{Irudia}}%
+      \def\tableautorefname{\textbasque{Taula}}%
+      \def\partautorefname{\textbasque{Zatia}}%
+      \def\appendixautorefname{\textbasque{Eranskin}}%
+      \def\equationautorefname{\textbasque{Ekuazioa}}%
+      \def\Itemautorefname{\textbasque{puntua}}%
+      \def\chapterautorefname{\textbasque{kapitulua}}%
+      \def\sectionautorefname{\textbasque{atala}}%
+      \def\subsectionautorefname{\textbasque{azpiatala}}%
+      \def\subsubsectionautorefname{\textbasque{azpi-azpiatala}}%
+      \def\paragraphautorefname{\textbasque{paragrafoa}}%
+      \def\Hfootnoteautorefname{\textbasque{oin-oharra}}%
+      \def\AMSautorefname{\textbasque{Ekuazioa}}%
+      \def\theoremautorefname{\textbasque{Teorema}}%
+      \def\pageautorefname{\textbasque{orria}}%
+    }%
+  }%
+  {%
+    \newcommand*{\glossariescaptionsbasque}{%
+      \renewcommand*{\glossaryname}{Glosarioa}%
+      \renewcommand*{\acronymname}{Akronimoa}%
+      \renewcommand*{\entryname}{Notazioa}%
+      \renewcommand*{\descriptionname}{Deskribapena}%
+      \renewcommand*{\symbolname}{Ikurra}%
+      \renewcommand*{\pagelistname}{Orrialde Zerrenda}%
+      \renewcommand*{\glssymbolsgroupname}{Ikurrak}%
+      \renewcommand*{\glsnumbersgroupname}{Zenbakiak}%
+      \def\figureautorefname{Irudia}%
+      \def\tableautorefname{Taula}%
+      \def\partautorefname{Zatia}%
+      \def\appendixautorefname{Eranskin}%
+      \def\equationautorefname{Ekuazioa}%
+      \def\Itemautorefname{puntua}%
+      \def\chapterautorefname{kapitulua}%
+      \def\sectionautorefname{atala}%
+      \def\subsectionautorefname{azpiatala}%
+      \def\subsubsectionautorefname{azpi-azpiatala}%
+      \def\paragraphautorefname{paragrafoa}%
+      \def\Hfootnoteautorefname{oin-oharra}%
+      \def\AMSautorefname{Ekuazioa}%
+      \def\theoremautorefname{Teorema}%
+      \def\pageautorefname{orria}%
+    }%
+  }%
+  \ifcsdef{captions\CurrentTrackedDialect}
+  {%
+    \csappto{captions\CurrentTrackedDialect}%
+    {%
+      \glossariescaptionsbasque
+    }%
+  }%
+  {%
+    \ifcsdef{captions\CurrentTrackedLanguage}
+    {%
+      \csappto{captions\CurrentTrackedLanguage}%
+      {%
+        \glossariescaptionsbasque
+      }%
+    }%
+    %
+    %
+  }%
+  \glossariescaptionsbasque
+}
+\renewcommand*{\glspluralsuffix}{-ak}
+\renewcommand*{\glsacrpluralsuffix}{\glspluralsuffix}
+\renewcommand*{\glsupacrpluralsuffix}{\glstextup{\glspluralsuffix}}
+
+

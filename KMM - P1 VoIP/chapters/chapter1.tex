@@ -1,0 +1,62 @@
+\chapter{Sarrera}
+
+\localtableofcontents
+
+Praktika honen helburua \gls{voip} teknologiekin ibiltzea da, honen gainean sortutako tresnak erabiliz.
+
+\section{VoIP}
+
+\gls{voip} teknologia erabiltzeak banda zabalaren bitartez telefono deiak egitea ahalbidetzen du telefono zerbitzari bat erabili ordez \autocite{nextiva_voip}. Honek ez ditu linea analogorik erabiltzen; ahotsa digitalizatu, konprimitu eta internet bidez bidaltzen du.
+
+\section{Asterisk}
+
+\textit{Asterisk} Linux-entzat garatutako telefonia softwarea da. Aplikazioak telefono fisiko sistema batean exekutatzen ari den softwarea simulatzen duen ordenagailuko aplikazioa da \autocite{asterisk_history}. Hau erabiliz, gure ordenagailua telefono digital gisa erabili dezakegu; bai gure isolamenduan deiak kudeatzeko, bai edozeinekin deiak egiteko.
+
+\section{SIP}
+
+Asteriskek \gls{sip} inplementatzen du komunikazio sesioak kudeatzeko. \gls{sip} aplikazio kapako kontrol protokoloa da eta multimediako komunikazio sesioak hasteko, kudeatzeko eta amaitzeko arauak ezartzen ditu \autocite{rosenberg2002sip}. Komunikazio hauek ahotsa, bideoa eta testua izan dezakete.
+
+Protokoloak definitzen dituen mezuak \autoref{tbl:sip-aginduak} taulan definitzen dira. Bertan ikusi daiteke ekintza desberdinentzako agindu multzoak daudela. Komunikazio guztietan bezala, agindu eskaera bakoitzarentzat erantzun bat dago. Erantzun hauek hiru digitu hamartarreko kodeen bitartez adierazten dira eta [1..6]xx zenbaki tartean aurkitzen dira.
+
+\begin{table}[htb]
+    \centering
+    \resizebox{\textwidth}{!}
+    {\begin{tabular}{
+        >{\raggedright\arraybackslash}p{0.2\textwidth-2\tabcolsep}
+        >{\raggedright\arraybackslash}p{0.8\textwidth-2\tabcolsep}
+    }
+        \toprule
+        Agindua & Deskribapena \\
+        \midrule
+        REGISTER & Bezeroaren URI eta sareko helbidea gordetzen dira zerbitzari erregistratzaile batean. \\
+        INVITE & Elkarrizketa bat hasi beste erabiltzaile batekin dei bat egiteko. \\
+        ACK & Erabiltzaileak INVITE eskaeraren azkeneko mezua irakurri duela adierazteko erabiltzen da. \\
+        BYE & Dei sesio bat amaitzeko seinalea. \\
+        CANCEL & Prozesatu gabeko eskaerak bertan behera utzi. \\
+        UPDATE & Sesio baten egoera aldatu elkarrizketaren egoera aldatu gabe. \\
+        REFER & Deia transferitzeko eskaera egiteko esan hartzaileari. \\
+        PRACK & Behin-behineko onarpena bidali. \\
+        SUBSCRIBE & Harpidetu jakinarazpen zerbitzarian oharrak jasotzeko. \\
+        NOTIFY & Harpidetutako bat ohartarazi gertaera bati buruz. \\
+        PUBLISH & Gertaera bati buruz ohartarazi jakinarazpen zerbitzaria. \\
+        MESSAGE & Testu mezu bat bidali. \\
+        INFO & Martxan dagoen sesio baten informazioa bidali. \\
+        OPTIONS & Amaiera puntu batek dituen aukerak. \\
+        \bottomrule
+    \end{tabular}}
+    \caption{\gls{sip}-ek definitzen dituen aginduak eta bakoitzaren azalpen laburra.}
+    \label{tbl:sip-aginduak}
+\end{table}
+
+Aurreko mezuak erabiliz ikusi dezakegu nola \gls{sip}-ek mezu trukaketa egiten duen, adibidez, sesio ingurune bat hasieratu eta amaitzeko. Hau, \autoref{fig:sip-session-example} irudian ikus dezakegu.
+
+\begin{figure}[htbp]
+    \centering
+    \includesvg[width=0.85\linewidth]{sip_session_example}
+    \caption{Sesio ingurune bat hasieratzeko eta amaitzeko mezu trukaketa \gls{sip} erabiliz}
+    \label{fig:sip-session-example}
+\end{figure}
+
+Bi pertsonen arteko komunikazioa egiteko pertsona bakoitzak ez da bestearekin zuzenean komunikatzen, \textit{proxy} batekin komunikatzen da eta hau bestearen proxy-arekin komunikatzen da. Adibidean ikusi dezakegu Alicek \texttt{INVITE} mezua bidaltzen duela Bobentzat; hau lehenengo pausoa da komunikazioa zehazteko. Mezua bidean doala, proxy-ek erantzun kodeak itzuliko dituzte prozesuaren egoera jakinarazteko. Gonbidapena iristen denean, Alice-ri abisatuko zaio \textit{180 Ringing} itzulera erantzunaren bidez. Bobek komunikazioa onartzen duenean, Aliceri \textit{200 OK} itzulera erantzuna bidaliko zaio; jasotzean, \texttt{ACK} mezua bidaliko dio Bobi eta komunikazio sesioa hasiko dute. Kasu honetan Bobek komunikazioa amaitu nahi du, beraz berak \texttt{BYE} mezua bidaliko dio Aliceri, eta behin jasotzen duenean \textit{200 OK} itzulera erantzuna bidaliko dio Bobi.
+
+Nahiz eta \autoref{fig:sip-session-example} irudiak ez izan \autoref{tbl:sip-aginduak} taulan agertzen diren agindu guztiak, ikuspen orokor ona ematen du 4 elementuen arteko komunikazioa nolakoa den ikusteko.
